@@ -1,0 +1,20 @@
+server:
+  port: 8080
+
+modbus:
+  viscometer:
+    host: 127.0.0.1
+    port: 502
+    unit-id: 1
+    poll-interval: 500
+  densitometer:
+    host: 127.0.0.1
+    port: 503
+    unit-id: 2
+    poll-interval: 500
+
+filter:
+  sliding-window-size: 10
+
+websocket:
+  push-interval: 200
