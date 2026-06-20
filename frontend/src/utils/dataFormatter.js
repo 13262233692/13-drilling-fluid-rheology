@@ -53,6 +53,12 @@ export const PARAMETER_UNITS = {
   temperature: '°C',
   flowBehaviorIndex: '',
   consistencyIndex: 'Pa·sⁿ',
+  ecd: 'g/cm³',
+  equivalentCirculatingDensity: 'g/cm³',
+  frictionDrag: 't',
+  weightOnBit: 't',
+  anomalyScore: '',
+  fracturePressure: 'g/cm³',
 }
 
 export const PARAMETER_LABELS = {
@@ -71,4 +77,30 @@ export const PARAMETER_LABELS = {
   temperature: '温度(T)',
   flowBehaviorIndex: '流性指数(n)',
   consistencyIndex: '稠度系数(K)',
+  ecd: '等效循环密度(ECD)',
+  equivalentCirculatingDensity: '等效循环密度(ECD)',
+  frictionDrag: '摩阻',
+  weightOnBit: '钻压(WOB)',
+  anomalyScore: '异常得分',
+  fracturePressure: '破裂压力',
+}
+
+export const RISK_LEVELS = {
+  NONE: { level: 0, label: '正常', color: '#4ade80' },
+  WARNING: { level: 1, label: '警告', color: '#f59e0b' },
+  CRITICAL: { level: 2, label: '危险', color: '#ef4444' },
+}
+
+export function getRiskLevelInfo(level) {
+  return RISK_LEVELS[level] || RISK_LEVELS.NONE
+}
+
+export function formatRiskLevel(level) {
+  const info = getRiskLevelInfo(level)
+  return info.label
+}
+
+export function formatRiskColor(level) {
+  const info = getRiskLevelInfo(level)
+  return info.color
 }

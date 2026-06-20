@@ -1,11 +1,18 @@
 <template>
   <div class="dashboard">
+    <FullScreenAlert :alert="activeAlert" @acknowledge="handleAlertAcknowledge" />
+    <AlertConfirmationDialog :alert="activeAlert" :show="showDialog" @confirm="handleAlertConfirm" @cancel="handleAlertCancel" />
+
     <header class="dashboard-header">
       <div class="header-left">
         <h1>🌊 钻井液流变性监控中心</h1>
         <span class="subtitle">深海钻井平台 · Deep-Sea Drilling Platform</span>
       </div>
       <div class="header-right">
+        <div v-if="alertSystemConnected" class="alert-status" :class="activeAlert ? 'has-alert' : ''">
+          <span class="alert-icon">⚠️</span>
+          <span>预警系统: {{ activeAlert ? '最高级别警报' : '正常' }}</span>
+        </div>
         <div class="status-indicator" :class="connected ? 'online' : 'offline'">
           <span class="status-dot"></span>
           {{ connected ? '在线' : '离线' }}
@@ -42,13 +49,36 @@
 
 <script setup>
 import { useRheologyWebSocket } from '../composables/useWebSocket.js'
+import { useAlertSystem } from '../composables/useAlertSystem.js'
 import { formatTimestamp } from '../utils/dataFormatter.js'
 import RheologyCurve from '../components/RheologyCurve.vue'
 import ViscometerGauge from '../components/ViscometerGauge.vue'
 import DensityGauge from '../components/DensityGauge.vue'
 import ParameterPanel from '../components/ParameterPanel.vue'
+import FullScreenAlert from '../components/FullScreenAlert.vue'
+import AlertConfirmationDialog from '../components/AlertConfirmationDialog.vue'
 
 const { connected, latestData, historyData } = useRheologyWebSocket()
+const {
+  activeAlert,
+  showDialog,
+  connected: alertSystemConnected,
+  acknowledgeAlert,
+  confirmAlert,
+  cancelAlert
+} = useAlertSystem()
+
+function handleAlertAcknowledge(alertId) {
+  acknowledgeAlert(alertId, '操作员')
+}
+
+function handleAlertConfirm() {
+  confirmAlert()
+}
+
+function handleAlertCancel() {
+  cancelAlert()
+}
 </script>
 
 <style scoped>
@@ -87,6 +117,33 @@ const { connected, latestData, historyData } = useRheologyWebSocket()
   display: flex;
   align-items: center;
   gap: 20px;
+}
+
+.alert-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+  transition: all 0.3s ease;
+}
+
+.alert-status.has-alert {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.2);
+  animation: pulse-alert 500ms infinite;
+}
+
+@keyframes pulse-alert {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+.alert-icon {
+  font-size: 16px;
 }
 
 .status-indicator {

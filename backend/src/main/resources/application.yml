@@ -1,6 +1,11 @@
 server:
   port: 8080
 
+spring:
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
+
 modbus:
   viscometer:
     host: 127.0.0.1
@@ -18,3 +23,17 @@ filter:
 
 websocket:
   push-interval: 200
+
+arima:
+  p: 3
+  d: 1
+  q: 1
+
+fracture:
+  pressure:
+    threshold: 1.85
+
+risk:
+  anomaly:
+    threshold: 0.8
+  poll-interval: 30000
